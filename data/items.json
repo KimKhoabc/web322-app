@@ -207,7 +207,7 @@
         "price": 99.99,
         "title": "Patio Heater",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     },
     {
         "id": 22,
@@ -217,7 +217,7 @@
         "price": 39.99,
         "title": "Garden Rake",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     },
     {
         "id": 23,
@@ -227,7 +227,7 @@
         "price": 199.99,
         "title": "Tablet",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     },
     {
         "id": 24,
@@ -237,7 +237,7 @@
         "price": 299.99,
         "title": "Smart Watch",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     },
     {
         "id": 25,
@@ -247,7 +247,7 @@
         "price": 24.99,
         "title": "Flip Flops",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     },
     {
         "id": 26,
@@ -257,7 +257,7 @@
         "price": 49.99,
         "title": "Hoodie",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     },
     {
         "id": 27,
@@ -267,7 +267,7 @@
         "price": 89.99,
         "title": "Tennis Racket",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     },
     {
         "id": 28,
@@ -277,7 +277,7 @@
         "price": 19.99,
         "title": "Jump Rope",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     },
     {
         "id": 29,
@@ -287,7 +287,7 @@
         "price": 14.99,
         "title": "Cat Toy",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     },
     {
         "id": 30,
@@ -297,6 +297,6 @@
         "price": 34.99,
         "title": "Dog Leash",
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis fringilla sem efficitur congue. Vestibulum efficitur blandit ultricies. Sed tempus mollis orci id facilisis.",
-        "published": true
+        "published": false
     }
 ]
