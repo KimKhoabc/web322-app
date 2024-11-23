@@ -50,28 +50,13 @@ function getCategories() {
 function addItem(itemData) {
     return new Promise((resolve, reject) => {
         itemData.published = itemData.published ? true : false;
-        if (!itemData.postDate) {
-            const today = new Date();
-            itemData.postDate = today.toISOString().split('T')[0];
-        }
-
+        const today = new Date();
+        itemData.postDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
         itemData.price = parseFloat(itemData.price);
-
         itemData.category = parseInt(itemData.category);
-
         itemData.id = items.length + 1;
-        const newItem = {
-            id: itemData.id,
-            category: itemData.category,
-            postDate: itemData.postDate,
-            featureImage: itemData.featureImage || "",
-            price: itemData.price,
-            title: itemData.title,
-            body: itemData.body,
-            published: itemData.published
-        };
-        items.push(newItem);
-        resolve(newItem);
+        items.push(itemData);
+        resolve(itemData);
     });
 }
 
@@ -96,6 +81,14 @@ function getItemById(id) {
         item ? resolve(item) : reject("no result returned");
     });
 }
+
+function getPublishedItemsByCategory(category) {
+    return new Promise((resolve, reject) => {
+        const itemsByCategory = items.filter(item => item.published && item.category == category);
+        itemsByCategory.length ? resolve(itemsByCategory) : reject("no results returned");
+    });
+}
+
 
 module.exports = {
     initialize,
