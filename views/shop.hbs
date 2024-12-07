@@ -19,7 +19,7 @@
                 {{{safeHTML data.item.body}}}
                 <br /><br />
                 <strong>Price:</strong> $ {{data.item.price}}<br />
-                <strong>Category:</strong> {{data.item.category}}<br />
+                <strong>Category:</strong> {{data.item.category}} - {{{safeHTML data.item.body}}}<br />
                 <strong>Last Updated:</strong> {{data.item.postDate}}
               </div>
             </div>
@@ -45,13 +45,16 @@
       </ul>
     {{/if}}
 
-    {{#if data.categories}}
-      <h4>Categories</h4>
-      <ul class="list-group">
-        {{#each data.categories}}
-          <a href="/shop?category={{this.id}}" class="list-group-item">{{this.name}}</a>
-        {{/each}}
-      </ul>
+        {{#if data.categories}}
+        <h4>Categories</h4>
+        <ul class="list-group">
+            {{#each data.categories}}
+                <a href="/shop?category={{this.id}}" class="list-group-item">{{this.category}}</a>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>No categories available.</p>
     {{/if}}
+
   </aside>
 </div>

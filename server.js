@@ -1,10 +1,10 @@
 /*********************************************************************************
-*  WEB322 – Assignment 04
+*  WEB322 – Assignment 05
 *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part 
 *  of this assignment has been copied manually or electronically from any other source 
 *  (including 3rd party web sites) or distributed to other students.
 *
-*  Name: Kim Khoa Nguyen - Student ID: 104574231 Date: November 22st, 2024
+*  Name: Kim Khoa Nguyen - Student ID: 104574231 Date: December 6th, 2024
 *  Replit Web App URL: https://replit.com/@kimkhoa0905/web322-app
 *  GitHub Repository URL: https://github.com/KimKhoabc/web322-app
 *
@@ -18,14 +18,39 @@ const streamifier = require('streamifier');
 const storeService = require('./store-service');
 const app = express();
 const exphbs = require('express-handlebars');
-const Handlebars = require('handlebars'); 
 
 const HTTP_PORT = process.env.PORT || 8080;
 
+const handlebars = exphbs.create({
+    helpers: {
+        formatDate: function(dateObj) {
+            let year = dateObj.getFullYear();
+            let month = (dateObj.getMonth() + 1).toString();
+            let day = dateObj.getDate().toString();
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        },
+        safeHTML: function(content) {
+            return new handlebars.handlebars.SafeString(content);
+        },
+        navLink: function(url, options) {
+            return '<li' +
+                ((url == app.locals.activeRoute) ? ' class="active" ' : '') +
+                '><a href="' + url + '">' + options.fn(this) + '</a></li>';
+        },
+        equal: function(lvalue, rvalue, options) {
+            if (arguments.length < 3) throw new Error("Handlebars Helper equal needs 2 parameters");
+            return (lvalue != rvalue) ? options.inverse(this) : options.fn(this);
+        }
+    },
+    extname: '.hbs',
+});
+
+app.engine('.hbs', handlebars.engine);
+app.set('view engine', '.hbs');
+
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
-app.engine('.hbs', exphbs.engine({ extname: '.hbs' }));
-app.set('view engine', '.hbs');
+
 
 cloudinary.config({
     cloud_name: 'dhi2beyvo',
@@ -43,28 +68,6 @@ app.use((req, res, next) => {
     next();
 });
 
-const handlebars = exphbs.create({
-    helpers: {
-        safeHTML: function(content) {
-            return new Handlebars.SafeString(content);  // <-- Use Handlebars.SafeString
-        },
-        navLink: function(url, options) {
-            return '<li' +
-                ((url == app.locals.activeRoute) ? ' class="active" ' : '') +
-                '><a href="' + url + '">' + options.fn(this) + '</a></li>';
-        },
-        equal: function(lvalue, rvalue, options) {
-            if (arguments.length < 3) throw new Error("Handlebars Helper equal needs 2 parameters");
-            return (lvalue != rvalue) ? options.inverse(this) : options.fn(this);
-        }
-    },
-    extname: '.hbs'
-});
-
-  app.engine('.hbs', handlebars.engine);
-  app.set('view engine', '.hbs');
-
-
 app.get("/", (req, res) => {
     res.redirect("/shop");
 });
@@ -78,66 +81,101 @@ app.get("/shop", async (req, res) => {
 
     try {
         let items = [];
-        
         if (req.query.category) {
-            // Fetch items by category if category is specified in the query
             items = await storeService.getPublishedItemsByCategory(req.query.category);
         } else {
-            // Fetch all published items if no category is specified
             items = await storeService.getPublishedItems();
         }
-        
-        // Sort items by postDate (latest first)
-        items.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
 
-        // Get the first item to display as the main item
+        items.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
         let item = items[0];
-        
-        // Assign items and item data to viewData
         viewData.items = items;
-        viewData.item = item; // Main item
+        viewData.item = item;
     } catch (err) {
         viewData.message = "No results found";
     }
 
     try {
-        // Get categories
         let categories = await storeService.getCategories();
+        console.log("Fetched Categories:", categories);
         viewData.categories = categories;
     } catch (err) {
         viewData.categoriesMessage = "No categories found";
+        console.error("Error fetching categories:", err);
     }
 
-    console.log(viewData);  // Debugging to check what data is being passed
-
-    // Render the 'shop' view with the viewData
+    console.log("View Data:", viewData);
     res.render("shop", { data: viewData });
 });
-
 
 app.get("/items", (req, res) => {
     if (req.query.category) {
         storeService.getItemsByCategory(req.query.category)
-            .then(data => res.render("items", { items: data }))
-            .catch(err => res.render("items", { message: "no results" }));
+            .then(data => {
+                if (data.length > 0) {
+                    res.render("items", { items: data });
+                } else {
+                    res.render("items", { message: "No results found" });
+                }
+            })
+            .catch(err => {
+                res.render("items", { message: "Error fetching items: " + err });
+            });
     } else {
         storeService.getAllItems()
-            .then(data => res.render("items", { items: data }))
-            .catch(err => res.render("items", { message: "no results" }));
+            .then(data => {
+                if (data.length > 0) {
+                    res.render("items", { items: data });
+                } else {
+                    res.render("items", { message: "No results found" });
+                }
+            })
+            .catch(err => {
+                res.render("items", { message: "Error fetching items: " + err });
+            });
     }
 });
 
-
 app.get("/categories", (req, res) => {
     storeService.getCategories()
-        .then(data => res.render("categories", { categories: data }))
-        .catch(err => res.render("categories", { message: "no results" }));
+        .then(data => {
+            if (data.length > 0) {
+                res.render("categories", { categories: data });
+            } else {
+                res.render("categories", { message: "No results found" });
+            }
+        })
+        .catch(err => {
+            res.render("categories", { message: "Error fetching categories: " + err });
+        });
 });
 
+app.get("/categories/add", (req, res) => {
+    res.render("addCategory");
+});
+
+app.post("/categories/add", (req, res) => {
+    storeService.addCategory(req.body)
+        .then(() => res.redirect("/categories"))
+        .catch((err) => res.status(500).send("Error adding category: " + err));
+});
+
+app.get("/categories/delete/:id", (req, res) => {
+    storeService.deleteCategoryById(req.params.id)
+        .then(() => res.redirect("/categories"))
+        .catch((err) => res.status(500).send("Unable to remove category / Category not found: " + err));
+});
 
 app.get("/items/add", (req, res) => {
-    res.render("addPost");
+    storeService.getCategories()
+        .then(categories => {
+            res.render("addPost", { categories: categories });
+        })
+        .catch(err => {
+            res.render("addPost", { categories: [] });
+        });
 });
+
 
 app.post("/items/add", upload.single("featureImage"), (req, res) => {
     if (req.file) {
@@ -173,6 +211,7 @@ app.post("/items/add", upload.single("featureImage"), (req, res) => {
 
     function processItem(imageUrl) {
         req.body.featureImage = imageUrl;
+        req.body.category = parseInt(req.body.category);
 
         storeService.addItem(req.body)
             .then(() => res.redirect("/items"))
@@ -186,56 +225,43 @@ app.get("/item/:id", (req, res) => {
         .catch(err => res.status(500).json({ message: err }));
 });
 
+app.get("/items/delete/:id", (req, res) => {
+    const id = req.params.id;
+    storeService.deletePostById(id)
+        .then(() => {
+            res.redirect("/items");
+        })
+        .catch((err) => {
+            res.status(500).send("Unable to Remove Post / Post not found: " + err);
+        });
+});
 
 app.get('/shop/:id', async (req, res) => {
-
-    // Declare an object to store properties for the view
     let viewData = {};
-  
-    try{
-  
-        // declare empty array to hold "item" objects
-        let items = [];
-  
-        // if there's a "category" query, filter the returned items by category
-        if(req.query.category){
-            // Obtain the published "items" by category
-            items = await itemData.getPublishedItemsByCategory(req.query.category);
-        }else{
-            // Obtain the published "items"
-            items = await itemData.getPublishedItems();
-        }
-  
-        // sort the published items by itemDate
-        items.sort((a,b) => new Date(b.itemDate) - new Date(a.itemDate));
-  
-        // store the "items" and "item" data in the viewData object (to be passed to the view)
-        viewData.items = items;
-  
-    }catch(err){
-        viewData.message = "no results";
+
+    try {
+        let item = await storeService.getItemById(req.params.id);
+        viewData.item = item;
+    } catch (err) {
+        viewData.message = "No results found";
     }
-  
-    try{
-        // Obtain the item by "id"
-        viewData.item = await itemData.getItemById(req.params.id);
-    }catch(err){
-        viewData.message = "no results"; 
-    }
-  
-    try{
-        // Obtain the full list of "categories"
-        let categories = await itemData.getCategories();
-  
-        // store the "categories" data in the viewData object (to be passed to the view)
+
+    try {
+        let categories = await storeService.getCategories();
         viewData.categories = categories;
-    }catch(err){
-        viewData.categoriesMessage = "no results"
+    } catch (err) {
+        viewData.categoriesMessage = "No categories found";
     }
-  
-    // render the "shop" view with all of the data (viewData)
-    res.render("shop", {data: viewData})
-  });
+
+    try {
+        let items = await storeService.getPublishedItemsByCategory(req.query.category);
+        viewData.items = items;
+    } catch (err) {
+        viewData.itemsMessage = "No items found in this category";
+    }
+    res.render("shop", { data: viewData });
+});
+
 
 app.use((req, res) => {
     res.status(404).render("404");

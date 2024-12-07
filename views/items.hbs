@@ -1,6 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <h2>Items</h2>
+        <a href="/items/add" class="btn btn-success pull-right">Add Post</a>
         <hr />
         <div class="table-responsive">
             <table class="table">
@@ -12,6 +13,7 @@
                         <th>Price</th>
                         <th>Category</th>
                         <th>Published</th>
+                        <th>Action</th> <!-- New column for the "Remove" button -->
                     </tr>
                 </thead>
                 <tbody>
@@ -19,10 +21,14 @@
                         <tr>
                             <td>{{id}}</td>
                             <td>{{title}}</td>
-                            <td>{{postDate}}</td>
+                            <td>{{#formatDate postDate}}{{/formatDate}}</td>
                             <td>{{price}}</td>
                             <td><a href="/items?category={{category}}">{{category}}</a></td>
                             <td>{{published}}</td>
+                            <td>
+                                <!-- Remove button, linking to the delete route -->
+                                <a href="/items/delete/{{id}}" class="btn btn-danger">Remove</a>
+                            </td>
                         </tr>
                     {{/each}}
                 </tbody>
